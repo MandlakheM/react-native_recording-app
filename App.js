@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
-import { useState, useEffect } from "react";
 import RecordingButton from "./src/components/recordingButton/recordingButton";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 export default function App() {
   const background = {
-    uri: "https://img.freepik.com/premium-vector/sound-wave-icon-vector-illustration-symbol-design_609277-7318.jpg?w=740",
+    uri: "https://img.freepik.com/premium-vector/gray-equalizer-isolated-white-background-vector-illustration-pulse-music-player-audio-wave-logo-vector-design-element-poster-sound-wave-template-visualization-signal-illustration-eps-10_299644-7588.jpg?w=740",
   };
+
   // const assignRecordings = (recs) => {
   //   setRecordings(() => [recs, ...recordings]);
   // };
@@ -16,12 +17,20 @@ export default function App() {
   // }, [recordings]);
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Ionicons name="recording-sharp" size={28} color="black" />
+          <Text>logo</Text>
+        </View>
+        <View>
+        <MaterialIcons name="menu" size={28} color="black" />
+        </View>
+      </View>
       <ImageBackground
         source={background}
         resizeMode="cover"
         style={styles.image}
       >
-        {/* <Text>Open up App.js to start working on your app!</Text> */}
         <RecordingButton />
       </ImageBackground>
       <StatusBar style="auto" />
@@ -30,16 +39,25 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  // background: { },
   container: {
     flex: 1,
     // backgroundColor: 'blue',
     // alignItems: "center",
     // justifyContent: "center",
   },
+  header: {
+    // backgroundColor: 'blue',
+    height: 100,
+    width: "100%",
+    marginTop: 25,
+    marginLeft: 10,
+    marginRight: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: 'space-between'
+  },
   image: {
     flex: 1,
     justifyContent: "center",
   },
 });
-
