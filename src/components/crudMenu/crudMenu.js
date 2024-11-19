@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
+    position:"absolute",
+    backgroundColor:'white',
+    bottom: 10
   },
   menuItems: {
     alignItems: "center",

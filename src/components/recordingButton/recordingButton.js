@@ -4,12 +4,15 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
+  TextInput,
+  Text,
 } from "react-native";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RecordItem from "../listItem/RecordItem";
 import CrudMenu from "../crudMenu/crudMenu";
 import NamingModal from "../modal/NamingModal";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function RecordingButton() {
   const [recording, setRecording] = useState();
@@ -20,19 +23,38 @@ export default function RecordingButton() {
   const [isNamingModalVisible, setIsNamingModalVisible] = useState(false);
   const [isRenamingModalVisible, setIsRenamingModalVisible] = useState(false);
   const [tempUri, setTempUri] = useState(null);
+  const [filteredRecordings, setFilteredRecordings] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadRecordings();
   }, []);
 
+  useEffect(() => {
+    filterRecordings();
+  }, [searchQuery, recordings]);
+
   const loadRecordings = async () => {
     try {
       const savedRecordings = await AsyncStorage.getItem("recordings");
       if (savedRecordings) {
-        setRecordings(JSON.parse(savedRecordings));
+        const parsedRecordings = JSON.parse(savedRecordings);
+        setRecordings(parsedRecordings);
+        setFilteredRecordings(parsedRecordings);
       }
     } catch (error) {
       console.error("Failed to load recordings", error);
+    }
+  };
+
+  const filterRecordings = () => {
+    if (!searchQuery) {
+      setFilteredRecordings(recordings);
+    } else {
+      const filtered = recordings.filter((recording) =>
+        recording.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredRecordings(filtered);
     }
   };
 
@@ -121,13 +143,59 @@ export default function RecordingButton() {
     setSelectedRec(rec);
   };
 
+  const animatedRedCircle = {
+    width: recording ? "60%" : "85%",
+    borderRadius: recording ? 5 : 35,
+  };
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={recordings}
-        renderItem={({ item }) => <RecordItem rec={item} showMenu={showMenu} />}
-        keyExtractor={(item) => item.uri}
-      />
+      <View style={styles.searchContainer}>
+        <FontAwesome5
+          name="search"
+          size={20}
+          color="gray"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search recordings"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        {searchQuery ? (
+          <Pressable onPress={() => setSearchQuery("")}>
+            <FontAwesome5 name="times-circle" size={20} color="gray" />
+          </Pressable>
+        ) : null}
+      </View>
+      {filteredRecordings.length > 0 ? (
+        <FlatList
+          data={filteredRecordings}
+          renderItem={({ item }) => (
+            <RecordItem rec={item} showMenu={showMenu} />
+          )}
+          keyExtractor={(item) => item.uri}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                {searchQuery
+                  ? "No recordings match your search"
+                  : "No recordings yet"}
+              </Text>
+            </View>
+          }
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            {searchQuery
+              ? "No recordings match your search"
+              : "No recordings yet"}
+          </Text>
+        </View>
+      )}
+
       <NamingModal
         visible={isNamingModalVisible}
         onClose={() => setIsNamingModalVisible(false)}
@@ -147,7 +215,7 @@ export default function RecordingButton() {
           style={styles.recordButton}
           onPress={recording ? stopRecording : startRecording}
         >
-          <View style={styles.redCircle} />
+          <View style={[styles.redCircle, animatedRedCircle]} />
         </Pressable>
         {toggleMenu && (
           <CrudMenu
@@ -182,7 +250,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     backgroundColor: "white",
-    height: 250,
+    height: 150,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
@@ -228,14 +296,40 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
+    top: -25,
   },
   redCircle: {
     backgroundColor: "orangered",
     width: 40,
-    height: 40,
+    height: 45,
     borderRadius: 20,
   },
   saveButton: {
     backgroundColor: "#007AFF",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 50,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "gray",
   },
 });

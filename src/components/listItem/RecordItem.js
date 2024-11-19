@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Audio } from "expo-av";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function RecordItem({ rec, showMenu }) {
-  const [sound, setSound] = useState();
+  const [sound, setSound] = useState(null);
 
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync({ uri: rec.uri });
@@ -12,20 +12,23 @@ export default function RecordItem({ rec, showMenu }) {
     await sound.playAsync();
   }
 
+  useEffect(()=>{
+  },[sound])
+
   return (
     <Pressable onLongPress={() => showMenu(rec)}>
       <View style={styles.container}>
         <FontAwesome5
-          onPress={playSound}
-          name={"play"}
+          onPress={playSound }
+          name={sound ? 'pause' : 'play'}
           size={20}
           color={"gray"}
         />
         <View style={styles.recordingInfo}>
-          <Text style={styles.recordingName}>{rec.name}</Text>
           <View style={styles.playbackContainer}>
             <View style={styles.playbackBackground} />
           </View>
+          <Text style={styles.recordingName}>{rec.name}</Text>
         </View>
       </View>
     </Pressable>
@@ -41,6 +44,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "orangered",
     gap: 15,
     shadowColor: "#000",
     shadowOffset: {
@@ -52,8 +57,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   playbackContainer: {
-    height: 50,
+    marginTop: 15,
+    height: 40,
     justifyContent: "center",
+    // backgroundColor:'blue',
   },
   playbackBackground: {
     height: 3,
@@ -64,7 +71,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   recordingName: {
-    fontSize: 16,
-    marginBottom: 5,
+    // backgroundColor:'blue',
+    fontSize: 12,
+    // marginBottom: 5,
   },
 });
