@@ -21,7 +21,7 @@ Recording Organization
 
 Custom naming for recordings
 Rename existing recordings
-Delete unwanted recordings
+Delete unwanted recordings (long press to delete a recording)
 Search functionality to find specific recordings
 
 User Interface
