@@ -249,12 +249,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   footer: {
-    backgroundColor: "white",
+    backgroundColor: "#0D1F22",
     height: 150,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
     gap: 70,
+    borderTopWidth: 3,
+    borderColor: "#C8963E",
   },
   input: {
     borderWidth: 1,
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#D0FFB7",
     borderRadius: 10,
     padding: 10,
     margin: 10,

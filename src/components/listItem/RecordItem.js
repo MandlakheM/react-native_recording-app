@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 10,
     borderWidth: 3,
-    borderColor: "orangered",
+    borderColor: "#C8963E",
     gap: 15,
     shadowColor: "#000",
     shadowOffset: {
